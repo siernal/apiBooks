@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker, Session, relationship
 import re
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 # ==================== КОНФИГУРАЦИЯ ДЛЯ RENDER.COM ====================
 # Используем переменную окружения для DATABASE_URL или SQLite по умолчанию
@@ -188,9 +189,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Монтируем статические файлы
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
 # ==================== Root endpoint ====================
 @app.get("/")
@@ -734,7 +732,15 @@ def system_status(db: Session = Depends(get_db)):
         "timestamp": datetime.now().isoformat()
     }
 
+# ==================== STATIC FILES ====================
 
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+    @app.get("/", include_in_schema=False)
+    def serve_frontend():
+        return FileResponse("static/index.html")
+        
 # Для локального запуска
 if __name__ == "__main__":
     import uvicorn
