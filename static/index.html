@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Movie Storage</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        input, button { margin: 5px; padding: 5px; }
+        .card { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<h1>🎬 Movie Storage</h1>
+
+<h2>Create Cabinet</h2>
+<input id="cabinetLetter" placeholder="Letter A-Z">
+<button onclick="createCabinet()">Create</button>
+
+<h2>Add Cassette</h2>
+<input id="cabinetId" placeholder="Cabinet ID">
+<input id="shelf" type="number" placeholder="Shelf (1-4)">
+<input id="title" placeholder="Movie Title">
+<input id="year" type="number" placeholder="Year">
+<input id="director" placeholder="Director">
+<button onclick="addCassette()">Add</button>
+
+<h2>All Cabinets</h2>
+<button onclick="loadCabinets()">Refresh</button>
+<div id="cabinets"></div>
+
+<script>
+
+const API = "";
+
+async function createCabinet() {
+    const letter = document.getElementById("cabinetLetter").value;
+
+    const res = await fetch("/cabinets/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ letter })
+    });
+
+    alert(await res.text());
+    loadCabinets();
+}
+
+async function addCassette() {
+    const data = {
+        cabinet_id: document.getElementById("cabinetId").value,
+        shelf: parseInt(document.getElementById("shelf").value),
+        movie_title_en: document.getElementById("title").value,
+        release_year: parseInt(document.getElementById("year").value),
+        director: document.getElementById("director").value
+    };
+
+    const res = await fetch("/cassettes/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    });
+
+    alert(await res.text());
+}
+
+async function loadCabinets() {
+    const res = await fetch("/cabinets/");
+    const data = await res.json();
+
+    const container = document.getElementById("cabinets");
+    container.innerHTML = "";
+
+    data.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+            <b>Cabinet ${c.letter}</b><br>
+            ID: ${c.id}<br>
+            Total shelves: 4
+        `;
+        container.appendChild(div);
+    });
+}
+
+loadCabinets();
+
+</script>
+
+</body>
+</html>
