@@ -190,22 +190,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ==================== Root endpoint ====================
-@app.get("/")
-def root():
-    """Корневой эндпоинт с информацией о сервисе"""
-    return {
-        "service": "Movie Storage API",
-        "version": "1.0.0",
-        "status": "operational",
-        "documentation": {
-            "swagger": "/docs",
-            "redoc": "/redoc"
-        },
-        "environment": os.getenv("RENDER", "development")
-    }
-
-
 # ==================== Health check endpoint ====================
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):
