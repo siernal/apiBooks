@@ -8,6 +8,8 @@ from sqlalchemy import create_engine, Column, String, Integer, DateTime, Foreign
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
 import re
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 # ==================== КОНФИГУРАЦИЯ ДЛЯ RENDER.COM ====================
 # Используем переменную окружения для DATABASE_URL или SQLite по умолчанию
